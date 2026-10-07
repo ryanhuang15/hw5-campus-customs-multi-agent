@@ -1,0 +1,22 @@
+.env
+.env.*
+!.env.example
+
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*.pyo
+*.tsbuildinfo
+
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+
+.DS_Store
+Thumbs.db
+*.log
+data (4).zip
+
+# Required public assignment databases: intentionally not ignored.

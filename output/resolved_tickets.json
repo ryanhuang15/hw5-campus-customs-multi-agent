@@ -1,0 +1,51 @@
+{
+  "run_context": {
+    "starting_checking_balance": 3400.0,
+    "working_database": "data/campus_customs_new.db",
+    "shop_date": "2026-08-31"
+  },
+  "tickets": [
+    {
+      "ticket_id": 101,
+      "final_status": "resolved",
+      "outcome": "Invoice 501 was paid through the human approval route, clearing Bulldog Print Co's unpaid-invoice block. Stock remained 0 for CC-TEE-WHITE size S with a shortage of 1; no shipment or delivery promise was recorded, and a factual customer draft was not sent.",
+      "participating_agents": [
+        {"agent": "Boss", "contribution": "Coordinated investigation and recorded the final bounded ticket decision."},
+        {"agent": "Inventory", "contribution": "Confirmed exact SKU/size stock, shortage, vendor specialty, lead time, and cleared invoice block."},
+        {"agent": "Customer Service", "contribution": "Prepared a factual customer draft without sending it."}
+      ],
+      "human_approvals": [
+        {"approved_by": "Ryan Huang", "reference": "HW5-T101-INV501", "kind": "invoice", "ref_id": 501, "amount": 840.0}
+      ],
+      "cash_effect": -840.0
+    },
+    {
+      "ticket_id": 102,
+      "final_status": "resolved",
+      "outcome": "Lease 1 rent was paid through the human approval route: $2,400 due 2026-09-02, approved by Ryan Huang after checking was verified at $2,560. The payment was recorded on 2026-08-31, left $160, and the real Ticket 102 workflow resolved the rent notice. No landlord message was sent.",
+      "participating_agents": [
+        {"agent": "Boss", "contribution": "Coordinated the rent-notice investigation and stopped at the approval boundary."},
+        {"agent": "Facilities", "contribution": "Confirmed lease, landlord, shop, due date, authoritative shop date, and timing."},
+        {"agent": "Accounting", "contribution": "Confirmed checking balance, lack of a recorded rent payment, and projected remaining cash."}
+      ],
+      "human_approvals": [
+        {"approved_by": "Ryan Huang", "reference": "HW5-T102-LEASE1", "kind": "lease", "ref_id": 1, "amount": 2400.0}
+      ],
+      "cash_effect": -2400.0
+    },
+    {
+      "ticket_id": 103,
+      "final_status": "resolved",
+      "outcome": "The price-override request was resolved as a bounded decision: 8 CC-HOOD-NAVY size M units were in stock, shortage was 12, list price was $58, and unit cost was $22. Accounting found $720 gross margin at list price for 20 units, but no vendor quote or safe discount price existed, so no discount, delivery promise, purchase, shipment, or payment was committed.",
+      "participating_agents": [
+        {"agent": "Boss", "contribution": "Coordinated the price-override decision and recorded the final limitations."},
+        {"agent": "Inventory", "contribution": "Confirmed exact stock, shortage, vendor specialty, lead time, and invoice-block status."},
+        {"agent": "Accounting", "contribution": "Calculated list-price revenue of $1,160, merchandise cost of $440, and gross margin of $720, then identified the missing vendor quote."}
+      ],
+      "human_approvals": [],
+      "cash_effect": 0.0
+    }
+  ],
+  "ending_checking_balance": 160.0,
+  "reconciliation": "3400.00 - 840.00 - 2400.00 - 0.00 = 160.00"
+}

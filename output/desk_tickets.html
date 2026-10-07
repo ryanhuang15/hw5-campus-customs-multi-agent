@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Campus Customs Desk Tickets</title>
+  <style>
+    :root { --ink:#171219; --muted:#6f6470; --pink:#e83e8c; --pink-soft:#fff0f7; --line:#eadde5; --paper:#fff; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:linear-gradient(135deg,#fff7fb 0%,#f8f3f7 100%); color:var(--ink); font:16px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif; }
+    .page { max-width:1100px; margin:0 auto; padding:38px 22px 64px; }
+    header { background:var(--ink); color:#fff; border-radius:22px; padding:30px 32px; box-shadow:0 18px 45px #30242d22; }
+    h1 { margin:0 0 6px; font-size:clamp(28px,5vw,44px); letter-spacing:-.04em; }
+    header p { margin:0; color:#f6dce9; }
+    .tabs { display:flex; flex-wrap:wrap; gap:9px; margin:24px 0 18px; }
+    .tab { border:1px solid var(--line); border-radius:999px; background:#fff; color:var(--ink); cursor:pointer; padding:10px 17px; font:inherit; font-weight:700; }
+    .tab:hover, .tab.active { background:var(--pink); border-color:var(--pink); color:#fff; }
+    .panel { display:none; background:var(--paper); border:1px solid var(--line); border-radius:20px; padding:28px; box-shadow:0 12px 30px #30242d12; }
+    .panel.active { display:block; }
+    h2 { margin:0 0 18px; font-size:28px; letter-spacing:-.03em; }
+    h3 { margin:25px 0 8px; color:var(--pink); font-size:19px; }
+    h3:first-of-type { margin-top:0; }
+    p { margin:8px 0 13px; }
+    ul { margin:8px 0 16px; padding-left:23px; }
+    li { margin:7px 0; }
+    .eyebrow { color:var(--muted); font-size:13px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; }
+    .expected { border-left:5px solid var(--pink); background:var(--pink-soft); border-radius:12px; padding:19px 21px; }
+    .actual { border:2px dashed #cdbec8; border-radius:12px; min-height:110px; padding:20px; color:var(--muted); background:#fcfafb; }
+    .callout { background:#f7f3f6; border-radius:12px; padding:15px 18px; margin:14px 0; }
+    code { background:#f2eaf0; border-radius:5px; padding:2px 5px; color:#942458; }
+    .tool { margin:10px 0; padding:12px 15px; border:1px solid var(--line); border-radius:10px; background:#fff; }
+    .tool strong { color:#a02763; }
+    .later { color:var(--muted); font-style:italic; padding:18px 0; }
+    footer { color:var(--muted); font-size:13px; margin-top:18px; }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header>
+      <div class="eyebrow">MGT 409 · Homework 5 · Problem 6</div>
+      <h1>Campus Customs Desk</h1>
+      <p>Expected agent paths before the first ticket-resolution run.</p>
+    </header>
+
+    <nav class="tabs" aria-label="Desk sections">
+      <button class="tab active" data-tab="ticket-101">Ticket 101</button>
+      <button class="tab" data-tab="ticket-102">Ticket 102</button>
+      <button class="tab" data-tab="ticket-103">Ticket 103</button>
+      <button class="tab" data-tab="cash">Cash</button>
+      <button class="tab" data-tab="reflection">Reflection</button>
+    </nav>
+
+    <section class="panel active" id="ticket-101">
+      <div class="eyebrow">Open customer order · Tauhid Zaman</div>
+      <h2>Ticket 101: Bulldog tee, size S</h2>
+      <div class="callout"><strong>Known facts:</strong> Ticket 101 requests one <code>CC-TEE-WHITE</code> in size S. Inventory is 0, list price is $28, and invoice 501 is an open $840 Bulldog Print Co invoice for the same tee/size. Bulldog Print Co has a 5-day lead time.</div>
+      <div class="expected">
+        <h3>Expected</h3>
+        <p><strong>Boss should call Inventory first.</strong> The central first question is whether the exact SKU/size can be fulfilled. Inventory can confirm the zero on-hand quantity, quantify the shortage, and identify whether the apparel vendor is blocked by its unpaid invoice.</p>
+        <p><strong>Expected delegation path:</strong></p>
+        <ul>
+          <li>Boss → Inventory: investigate the requested SKU/size and restock choices.</li>
+          <li>Inventory → Accounting: assess invoice 501, the cost of clearing it, cash feasibility, and whether a payment would need human approval before the vendor could ship.</li>
+          <li>Accounting → Boss: return a financial recommendation; it should not approve or execute its own payment.</li>
+          <li>Boss → Customer Service: after the operational decision, prepare a draft to Tauhid explaining availability or delay. The draft must not be sent.</li>
+        </ul>
+        <p>Facilities is unnecessary because this ticket has no lease or shop-space issue. The likely stopping point is a documented shortage and a human-approval blocker if paying invoice 501 is necessary.</p>
+        <h3>Expected MCP tools</h3>
+        <div class="tool"><strong><code>list_open_tickets</code></strong> — Boss confirms the current ticket-board record and preserves ticket 101 context.</div>
+        <div class="tool"><strong><code>investigate_customer_order</code></strong> — Inventory reads the exact stock, price, linked invoice, vendor, and 5-day lead time.</div>
+        <div class="tool"><strong><code>get_restock_options</code></strong> — Inventory compares the shortage and vendor shipping blocks using database vendor records.</div>
+        <div class="tool"><strong><code>get_accounting_context</code></strong> — Accounting checks invoice status, checking cash, prior payments, and product economics.</div>
+        <div class="tool"><strong><code>execute_approved_payment</code></strong> — Conditional only: it may be called only after an external human approval reference is supplied and cash is sufficient; no payment is expected during this planning step.</div>
+      </div>
+      <h3>Actual</h3>
+      <div class="actual"><p><strong>Result: Resolved after a human-approved invoice payment.</strong> The real run found 0 <code>CC-TEE-WHITE</code> size S units and a shortage of 1. Inventory and Boss confirmed Bulldog Print Co was the appropriate apparel-reprint vendor with a 5-day lead time. Ryan Huang explicitly approved invoice 501 for $840 using reference <code>HW5-T101-INV501</code>; the approval route recorded the payment, changed checking from $3,400 to $2,560, marked the invoice paid, and cleared the vendor’s unpaid-invoice shipping block.</p><p>Boss, Inventory, and Customer Service participated. The team drafted factual customer wording and did not send it. The database still had no shipment or receipt confirmation, so the resolution note records that the tee was not yet fulfilled. No additional payment or external communication occurred.</p><p><strong>Comparison with Expected:</strong> The expected Inventory → Accounting → Customer Service path was broadly reflected, but the actual run included repeated MCP retries and direct Boss/Inventory fact checks. The approval occurred between the planned investigation and the final bounded resolution.</p></div>
+    </section>
+
+    <section class="panel" id="ticket-102">
+      <div class="eyebrow">Open rent notice · Elm City Properties</div>
+      <h2>Ticket 102: Rent due</h2>
+      <div class="callout"><strong>Known facts:</strong> Ticket 102 points to lease 1 for the Chapel Street shop. Rent is $2,400 and due 2026-09-02. The authoritative shop date is 2026-08-31, and checking contains $3,400.</div>
+      <div class="expected">
+        <h3>Expected</h3>
+        <p><strong>Boss should call Facilities first.</strong> This is a lease and rent-notice ticket, so Facilities is the subject-matter owner and can establish the due date, landlord, space, and timing from the database.</p>
+        <p><strong>Expected delegation path:</strong></p>
+        <ul>
+          <li>Boss → Facilities: investigate lease 1 and calculate timing using <code>desk.date_today</code>, not the computer clock.</li>
+          <li>Facilities → Accounting: check whether the $2,400 rent is financially feasible and explain the required human-approval step.</li>
+          <li>Accounting → Boss: return a payment proposal or insufficient-cash blocker. Since $3,400 covers $2,400, the expected issue is approval, not cash insufficiency.</li>
+          <li>Facilities keeps any landlord email as a draft; Customer Service is unnecessary because this is not a customer communication.</li>
+        </ul>
+        <p>Inventory is unnecessary because no product is involved. No payment should execute unless a human explicitly approves it.</p>
+        <h3>Expected MCP tools</h3>
+        <div class="tool"><strong><code>list_open_tickets</code></strong> — Boss confirms the open rent-notice record and preserves ticket 102 context.</div>
+        <div class="tool"><strong><code>investigate_rent_notice</code></strong> — Facilities reads the linked lease, database shop date, and checking balance and derives the two-day interval.</div>
+        <div class="tool"><strong><code>get_accounting_context</code></strong> — Accounting checks cash, existing payments, invoices, rent, and financial context.</div>
+        <div class="tool"><strong><code>execute_approved_payment</code></strong> — Conditional only after external human approval; it must refuse any insufficient-cash attempt and record a valid approved payment safely.</div>
+      </div>
+      <h3>Actual</h3>
+      <div class="actual"><p><strong>Result: Resolved after explicit human approval.</strong> Before execution, checking was $2,560 and the $2,400 lease payment was permitted, leaving $160. Ryan Huang approved lease 1 using reference <code>HW5-T102-LEASE1</code>. The FastAPI human-approval route recorded the payment on 2026-08-31, and the working database now shows checking at $160.</p><p>Boss and Facilities confirmed lease 1 for the Chapel Street shop, Elm City Properties, and rent due 2026-09-02. The corrected MCP investigation reported the recorded lease payment, and Boss called <code>mark_ticket_resolved</code>. No duplicate payment or landlord communication occurred.</p><p><strong>Comparison with Expected:</strong> The expected Facilities-first path and Accounting feasibility check were substantially accurate. The actual run first stopped at approval, then correctly resolved after the human payment. A technical gap in the first post-payment investigation was corrected so the agent could see the lease payment record.</p></div>
+    </section>
+
+    <section class="panel" id="ticket-103">
+      <div class="eyebrow">Open price override · Yale AI Club</div>
+      <h2>Ticket 103: Bulk hoodie discount</h2>
+      <div class="callout"><strong>Known facts:</strong> Yale AI Club requests 20 <code>CC-HOOD-NAVY</code> hoodies in size M. Inventory has 8, leaving a shortage of 12. Unit cost is $22 and list price is $58. Bulldog Print Co is the apparel-reprint vendor with a 5-day lead time, but its open invoice 501 blocks shipment.</div>
+      <div class="expected">
+        <h3>Expected</h3>
+        <p><strong>Boss should call Inventory first.</strong> The requested quantity exceeds the exact SKU/size stock, so Inventory must establish the shortage and restock constraints before Accounting can judge a discounted offer.</p>
+        <p><strong>Expected delegation path:</strong></p>
+        <ul>
+          <li>Boss → Inventory: check the 20-unit request, current 8-unit stock, shortage of 12, and vendor lead-time/block status.</li>
+          <li>Inventory → Accounting: ask for margin, discount, cash, invoice, and purchase-feasibility analysis using the $22 cost and $58 list price.</li>
+          <li>Accounting → Boss: return the feasible pricing/restock recommendation and identify whether invoice 501 requires separate human approval.</li>
+          <li>Boss → Customer Service: prepare a draft quote or availability response that distinguishes the 8 currently available units, the 12-unit shortage, and any approval or restock uncertainty.</li>
+          <li>Inventory may be asked for a final restock recheck after a genuinely approved invoice payment, but no payment or delivery promise is expected in this planning document.</li>
+        </ul>
+        <p>Facilities is unnecessary. The draft must not be sent, and a discount must not reduce the offer below a financially defensible margin.</p>
+        <h3>Expected MCP tools</h3>
+        <div class="tool"><strong><code>list_open_tickets</code></strong> — Boss confirms the open price-override record and preserves ticket 103 context.</div>
+        <div class="tool"><strong><code>investigate_bulk_hoodie_request</code></strong> — Inventory reads exact stock, pricing, apparel-vendor lead time, and invoice block.</div>
+        <div class="tool"><strong><code>get_restock_options</code></strong> — Inventory checks the shortage and all vendor shipping eligibility from current invoices.</div>
+        <div class="tool"><strong><code>get_accounting_context</code></strong> — Accounting evaluates unit cost, list price, cash, invoice status, and financial feasibility.</div>
+        <div class="tool"><strong><code>execute_approved_payment</code></strong> — Conditional only after human approval and sufficient cash; it is not called merely to make the discount appear feasible.</div>
+      </div>
+      <h3>Actual</h3>
+      <div class="actual"><p><strong>Result: Resolved as a bounded pricing decision.</strong> The real run found 8 <code>CC-HOOD-NAVY</code> size M hoodies in Aisle A against a request for 20, leaving a shortage of 12. The database showed a $58 list price and $22 unit cost, or $36 gross margin per unit at list price. Bulldog Print Co was the matching apparel-reprint vendor with a 5-day lead time and no open unpaid invoice.</p><p>Boss, Inventory, and Accounting participated. Inventory supplied the stock, shortage, vendor, and lead-time facts. Accounting calculated $1,160 revenue, $440 merchandise cost, and $720 gross margin at list price, then correctly reported that no vendor quote or discount price was available. The team made no purchase, made no payment request, promised no delivery date, and sent no customer message. Boss marked the price-override decision resolved with those limitations recorded in the ticket.</p><p><strong>Comparison with Expected:</strong> The expected Inventory → Accounting path was accurate, and Facilities was unnecessary. Customer Service was not required in the final actual path. The actual run was more repetitive than expected and briefly exposed a conflicting restock lookup, but it ended with a safer no-discount/no-delivery-promise decision.</p></div>
+    </section>
+
+    <section class="panel" id="cash">
+      <div class="eyebrow">Verified working-database reconciliation</div>
+      <h2>Cash</h2>
+      <div class="callout"><strong>Starting checking balance:</strong> $3,400 on the clean Problem 9 reset.</div>
+      <ul>
+        <li><strong>Ticket 101:</strong> −$840.00 for invoice 501 to Bulldog Print Co. This required Ryan Huang’s explicit approval with reference <code>HW5-T101-INV501</code>.</li>
+        <li><strong>Ticket 102:</strong> −$2,400.00 for lease 1 rent to Elm City Properties. This required Ryan Huang’s explicit approval with reference <code>HW5-T102-LEASE1</code> and left $160.</li>
+        <li><strong>Ticket 103:</strong> $0.00 change. The team made a bounded pricing decision and did not create a purchase, vendor quote, or payment.</li>
+      </ul>
+      <div class="callout"><strong>Verified ending checking balance:</strong> $160.00 on 2026-08-31, matching <code>cash_accounts</code> in <code>data/campus_customs_new.db</code>. Reconciliation: $3,400 − $840 − $2,400 − $0 = $160.</div>
+    </section>
+
+    <section class="panel" id="reflection">
+      <div class="eyebrow">Problem 10 · Evidence-based reflection</div>
+      <h2>What I learned from running Campus Customs</h2>
+      <p>I built this system to make a small shop’s operations observable and safer, not just to make an agent answer questions. The most important evidence is in the audit trail and the database. It shows both the value of separating responsibilities and the cost of making several language-model calls coordinate around tools that have very exact schemas.</p>
+
+      <h3>Ticket 101 — the payment blocker was handled safely, but resolution was too permissive</h3>
+      <p>The team eventually identified the real issue: there were 0 <code>CC-TEE-WHITE</code> size S units, a shortage of 1, and Bulldog Print Co’s $840 invoice 501 was blocking the apparel reprint. After I explicitly approved that invoice as Ryan Huang using <code>HW5-T101-INV501</code>, the approval route recorded one payment, changed checking from $3,400 to $2,560, marked invoice 501 paid, and made the vendor eligible to ship. The audit trail and MCP results support those facts; no negative balance was created and no customer or vendor message was sent.</p>
+      <p>The actual workflow also exposed weaknesses. Boss and Inventory made repeated MCP calls, including retries after generated names or arguments did not match the schemas. The log contains alias and argument-repair behavior, and the team spent many calls rechecking the same stock, date, and restock facts. That was inefficient, but the checks were useful because they prevented the agents from assuming that paying an invoice meant the tee had arrived. Customer Service produced a factual draft rather than sending it, which respected the communication rule. Facilities was correctly unnecessary.</p>
+      <p>My Expected plan was directionally right: Boss should start with Inventory, Inventory should involve Accounting for invoice 501, and Customer Service should draft the customer response. The actual run differed because Boss and Inventory sometimes called the MCP tools directly, delegated more than once, and needed tool-name corrections. More seriously, the available <code>mark_ticket_resolved</code> operation allowed the Boss to set the ticket to resolved even though the same evidence said stock was still 0 and no shipment or fulfillment was confirmed. The final state therefore recorded a resolution note saying the order could not yet be fulfilled. I learned that a status-changing tool needs stronger business validation; a model’s decision to call it is not enough.</p>
+
+      <h3>Ticket 102 — the approval boundary worked exactly as intended</h3>
+      <p>Ticket 102 was investigated with the shop date from <code>desk.date_today</code>, which was 2026-08-31. Facilities found lease 1 for the Chapel Street shop, Elm City Properties as landlord, $2,400 rent due 2026-09-02, and two days until the due date. Before execution, Accounting confirmed $2,560 in checking, so the approved payment was affordable and would leave $160. Ryan Huang then approved the payment using <code>HW5-T102-LEASE1</code>. The working database records the lease payment and the ticket was resolved by the real Boss workflow.</p>
+      <p>The Expected plan predicted Facilities first, then Accounting, with no Inventory involvement. That prediction was mostly accurate: Facilities became the meaningful specialist and used <code>investigate_rent_notice</code>, <code>get_shop_date</code>, and <code>get_accounting_context</code>. The actual workflow first stopped for approval, then required a small MCP correction so the rent investigation could expose the recorded lease payment. After that, Boss resolved the ticket without a duplicate payment. The system preserved the landlord communication as unsent and the approval route kept execution separate from agent investigation.</p>
+
+      <h3>Ticket 103 — the missing run was completed as a bounded decision</h3>
+      <p>After the submission audit, I continued Ticket 103 through the real team without resetting the database. The audit trail now contains 60 Ticket 103 events. Boss delegated to Inventory and Accounting; the agents used the bulk-hoodie investigation, restock, accounting, and shop-date MCP tools. They confirmed 8 in stock, a shortage of 12, $22 unit cost, $58 list price, and a 5-day apparel-reprint option with no unpaid invoice block.</p>
+      <p>The actual outcome was more cautious than a promised bulk sale: Accounting calculated $1,160 revenue, $440 cost, and $720 gross margin at list price, but no vendor quote or discount price was available. Boss resolved the price-override request by recording that no safe discount or delivery promise could be made. No payment, purchase, shipment, customer message, or cash change occurred. My Expected Inventory → Accounting plan was accurate; Customer Service was not needed, and the actual run made the missing quote information explicit rather than inventing it.</p>
+
+      <h3>What one agent could have done more simply</h3>
+      <p>For Ticket 101, one well-prompted agent with the existing investigation, restock, accounting, date, and draft tools could have gathered the facts in a short sequence and then returned a decision. Ticket 102 is an even clearer example: one agent could call the rent investigation and accounting context, prepare the approval request, and stop. The five-agent design added repeated handoffs, extra model calls, and opportunities for tool-name and argument mismatches. The audit trail shows that coordination itself became part of the work.</p>
+      <p>Delegation was still useful when the question genuinely crossed domains. Inventory understood the exact SKU/size shortage and vendor block; Accounting protected the cash and approval rules; Facilities interpreted the lease; and Customer Service kept drafts factual and unsent. I would keep the roles for auditability and specialization, but I would use fewer handoffs for narrow tickets and make the Boss’s plan more deterministic. A single agent could simplify the reasoning without weakening the approval boundary, because the guarded payment route—not the number of agents—is what prevents unauthorized cash changes.</p>
+
+      <h3>Three new problems this team could handle now</h3>
+      <ul>
+        <li>A customer asks about one white Bulldog tee in a different available size. Boss and Inventory could use the ticket-board and customer-order investigation tools, Customer Service could draft a factual reply, and no external message would be sent.</li>
+        <li>The landlord sends another rent notice for lease 1. Facilities could check the lease and authoritative shop date, Accounting could calculate whether checking can cover it, and the team could request human approval without executing payment.</li>
+        <li>A student organization asks for a bulk hoodie quantity or discount using the existing product. Inventory could calculate stock and shortage, Accounting could compare the $22 cost with the $58 list price and cash context, and Customer Service could prepare a draft quote that separates available units from restock uncertainty.</li>
+      </ul>
+
+      <h3>Three problems the current system cannot adequately solve</h3>
+      <ul>
+        <li>It cannot confirm that a vendor actually shipped, that a package arrived, or that inventory was received. The current data has vendor lead time but no shipment, purchase-order, receiving, or inventory-adjustment operation. I would add MCP tools for creating a purchase order draft, recording shipment/receipt, and updating inventory; Inventory could own those steps, with Accounting reviewing the cost.</li>
+        <li>It cannot execute or track a real customer refund or sales transaction. There is no order-payment, revenue, refund, or customer-account data and no guarded refund tool. I would add database-backed refund and order-status tools with a separate human approval rule; Accounting could own the financial action and Customer Service could draft the explanation.</li>
+        <li>It cannot actually send or track communications, nor can it verify a landlord or vendor response. The current application intentionally produces drafts only. A safe extension would need an outbound-message queue, delivery/status records, and an explicit human-send route. Customer Service could draft the message, while a human-controlled communication workflow—not an agent—would authorize sending.</li>
+      </ul>
+
+      <h3>Overall lesson</h3>
+      <p>My strongest takeaway is that the controls mattered more than the impressive-looking delegation. The $840 and $2,400 approvals were explicit, the final balance stopped at $160, and the audit trail made the reasoning inspectable. At the same time, Ticket 101 showed that a system can obey financial rules and still record an operationally premature resolution. In a next version I would tighten resolution validation, make payment visibility part of every rent investigation, and reduce alias-repair loops; Ticket 103 also showed why a bounded “no safe discount” decision can be a legitimate resolution when the data does not support a promise.</p>
+    </section>
+
+    <footer>Planning only · No agents were run, tickets were changed, payments were executed, or communications were sent for Problem 6.</footer>
+  </main>
+  <script>
+    const tabs = document.querySelectorAll('.tab');
+    const panels = document.querySelectorAll('.panel');
+    tabs.forEach(tab => tab.addEventListener('click', () => {
+      tabs.forEach(item => item.classList.toggle('active', item === tab));
+      panels.forEach(panel => panel.classList.toggle('active', panel.id === tab.dataset.tab));
+    }));
+  </script>
+</body>
+</html>
